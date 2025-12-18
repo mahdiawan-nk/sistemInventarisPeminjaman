@@ -13,12 +13,12 @@
            bg-slate-950 text-neutral-100 h-full
            dark:bg-slate-950 dark:text-neutral-100">
 
-            <div class="relative max-w-4xl px-8 mx-auto lg:px-0">
+            <div class="relative max-w-4xl px-2 mx-auto lg:px-0">
 
                 <div class="relative flex flex-col md:flex-row md:items-center gap-12">
 
                     <!-- LEFT CONTENT -->
-                    <div class="flex-1">
+                    <div class="flex-1 px-20">
                         <h1
                             class="flex flex-col text-5xl font-extrabold leading-tight
                            text-neutral-100 dark:text-white">
@@ -56,7 +56,7 @@
                     </div>
 
                     <!-- RIGHT IMAGE -->
-                    <div class="relative md:w-96">
+                    <div class="relative md:hidden">
                         <img src="https://cdn.devdojo.com/images/december2020/designs3d.png"
                             alt="ICT Inventory Illustration"
                             class="w-full h-auto rounded-xl
@@ -74,7 +74,7 @@
                 </div>
 
                 <!-- BOTTOM TEXT -->
-                <div class="max-w-3xl">
+                <div class="max-w-3xl px-20">
                     <p
                         class="text-base leading-relaxed
                        text-neutral-600
