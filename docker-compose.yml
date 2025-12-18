@@ -1,0 +1,77 @@
+
+services:
+  app:
+    build: .
+    container_name: invict_app
+    working_dir: /var/www/html
+    user: "${APP_UID:-1000}:${APP_GID:-1000}"
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "9080:9000"
+    depends_on:
+      - mysql
+    networks:
+      - invict
+
+  node:
+    image: node:22
+    container_name: node_invict
+    working_dir: /var/www/html
+    user: "${APP_UID:-1000}:${APP_GID:-1000}"
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "5173:5173"
+    networks:
+      - invict
+    command: tail -f /dev/null  # biar container node tetap hidup dan bisa exec manual
+
+  webserver:
+    image: nginx:alpine
+    container_name: nginx_invict
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
+    networks:
+      - invict
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_invict
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: e-invict
+      MYSQL_USER: e-invict
+      MYSQL_PASSWORD: e-invict
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - invict
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_invict
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql_invict   # Sesuai nama service MySQL
+      PMA_PORT: 3306
+    depends_on:
+      - mysql
+    networks:
+      - invict
+
+networks:
+  invict:
+
+volumes:
+  mysql_data:
