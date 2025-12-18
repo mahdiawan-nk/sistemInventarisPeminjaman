@@ -144,8 +144,8 @@ class Index extends Component
             'aktiual_tanggal_kembali' => $this->tanggal_pengembalian,
             'aktual_waktu_pengembalian' => $this->jam_pengembalian,
         ]);
-        $item->items()->update(['status' => 'available']);
-        $this->logStatus('borrowed', 'available', $item->items()->get()->pluck('id')->toArray());
+        $item->items()->update(['status' => 'available']); // update status item
+        $this->logStatus('borrowed', 'available', $item->items()->get()->pluck('id')->toArray()); // log status
         $this->notify('success', 'Item berhasil diupdate status');
         $this->closeModal('pengembalianPeminjaman');
     }
