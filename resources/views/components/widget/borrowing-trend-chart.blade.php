@@ -32,7 +32,6 @@
     {{-- Chart --}}
     <div id="chartWidget" style="height: 300px; width: 87%;"></div>
 
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var chart = new CanvasJS.Chart("chartWidget", {

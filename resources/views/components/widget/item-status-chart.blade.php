@@ -31,9 +31,9 @@
     </div>
 
     {{-- CanvasJS Chart --}}
-    <div id="itemStatusChart" style="height: 300px; width: 86%;"></div>
+    <div id="itemStatusChart" wire:ignore style="height: 300px; width: 86%;"></div>
 
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var chart = new CanvasJS.Chart("itemStatusChart", {

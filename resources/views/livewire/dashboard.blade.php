@@ -1,4 +1,4 @@
-<x-layouts.app :title="__('Dashboard')">
+<div>
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
         <x-widget.welcome-card name="{{ auth()->user()->name }}"
             role="{{ auth()->user()->roles->pluck('name')->first() }}"
@@ -9,70 +9,77 @@
                     <x-heroicon-o-users class="w-6 h-6 text-yellow-600 dark:text-yellow-200" />
                 </x-widget.card-stat>
 
-                <x-widget.card-stat title="Total Category" value="125">
+                <x-widget.card-stat title="Total Category" :value="$categoryCount">
                     <x-heroicon-o-users class="w-6 h-6 text-yellow-600 dark:text-yellow-200" />
                 </x-widget.card-stat>
 
-                <x-widget.card-stat title="Total Location" value="125">
+                <x-widget.card-stat title="Total Location" :value="$locationCount">
                     <x-heroicon-o-users class="w-6 h-6 text-yellow-600 dark:text-yellow-200" />
                 </x-widget.card-stat>
 
-                <x-widget.card-stat title="Total Asset" value="125">
+                <x-widget.card-stat title="Total Asset" :value="$itemCount">
                     <x-heroicon-o-users class="w-6 h-6 text-yellow-600 dark:text-yellow-200" />
                 </x-widget.card-stat>
 
-                <x-widget.card-stat title="Total Asset Available" value="125">
+                <x-widget.card-stat title="Total Asset Available" :value="$itemAvailableCount">
                     <x-heroicon-o-users class="w-6 h-6 text-yellow-600 dark:text-yellow-200" />
                 </x-widget.card-stat>
 
-                <x-widget.card-stat title="Total Asset Damaged" value="125">
+                <x-widget.card-stat title="Total Asset Damaged" :value="$itemDamagedCount">
                     <x-heroicon-o-users class="w-6 h-6 text-yellow-600 dark:text-yellow-200" />
                 </x-widget.card-stat>
 
-                <x-widget.card-stat title="Total Asset Borrow" value="125">
+                <x-widget.card-stat title="Total Asset Borrow" :value="$itemBorrowedCount">
                     <x-heroicon-o-users class="w-6 h-6 text-yellow-600 dark:text-yellow-200" />
                 </x-widget.card-stat>
 
-                <x-widget.card-stat title="Total Peminjaman" value="125">
+                <x-widget.card-stat title="Total Peminjaman" :value="$peminjamanCount">
                     <x-heroicon-o-users class="w-6 h-6 text-yellow-600 dark:text-yellow-200" />
                 </x-widget.card-stat>
 
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                <x-widget.item-status-chart />
-                <x-widget.inventory-units-chart :totalUnits="120" :borrowedUnits="45" type="bar" />
+                <x-widget.item-status-chart :statusCounts="$this->chartItemsummary()" />
+                <x-widget.inventory-units-chart :totalUnits="$this->trendUnitVsItem()['Available']" :borrowedUnits="$this->trendUnitVsItem()['Borrowed']" type="bar" />
 
             </div>
-            <x-widget.borrowing-trend-chart title="Trend Peminjaman" type="line" />
+            <x-widget.borrowing-trend-chart title="Trend Peminjaman Tahun {{ $currentYear }}" type="line"
+                :dataPoints="$this->trendPeminjaman()" />
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
 
-                <x-widget.table-widget title="Overview Item Baru Ditambahkan" :headers="['Code Item', 'Item', 'Status', 'Keterangan']">
-                    <tr>
-                        <td class="px-4 py-3">1</td>
-                        <td class="px-4 py-3">Laptop Acer Aspire 5</td>
-                        <td class="px-4 py-3">
-                            <span
-                                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
-                                Borrowed
-                            </span>
-                        </td>
-                        <td class="px-4 py-3">Keterangan</td>
-                    </tr>
+                <x-widget.table-widget title="Overview Item Baru Ditambahkan" :headers="['Code Item', 'Item', 'Status', 'Created At']">
+                    @foreach ($this->overviewNewItemAdded() as $itemAdd)
+                        <tr>
+                            <td class="px-4 py-3">{{ $itemAdd->asset_code }}</td>
+                            <td class="px-4 py-3">{{ $itemAdd->name }}</td>
+                            <td class="px-4 py-3">
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
+                                    {{ $itemAdd->status }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3">{{ $itemAdd->created_at }}</td>
+                        </tr>
+                    @endforeach
+
                 </x-widget.table-widget>
 
-                <x-widget.table-widget title="Overview Aktivitas Peminjaman" :headers="['Code Peminjaman', 'Peminjam', 'Status', 'Keterangan']">
-                    <tr>
-                        <td class="px-4 py-3">1</td>
-                        <td class="px-4 py-3">Laptop Acer Aspire 5</td>
-                        <td class="px-4 py-3">
-                            <span
-                                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
-                                Borrowed
-                            </span>
-                        </td>
-                        <td class="px-4 py-3">Keterangan</td>
+                <x-widget.table-widget title="Overview Aktivitas Peminjaman" :headers="['Code Peminjaman', 'Peminjam', 'Status', 'Created At']">
+                    @foreach ($this->overviewPeminjaman() as $peminjaman)
+                        <tr>
+                            <td class="px-4 py-3">{{ $peminjaman->code_data_pinjaman }}</td>
+                            <td class="px-4 py-3">{{ $peminjaman->nama_peminjam }}</td>
+                            <td class="px-4 py-3">
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
+                                    {{ $peminjaman->status_peminjaman }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3">{{ $peminjaman->created_at }}</td>
 
-                    </tr>
+                        </tr>
+                    @endforeach
+
                 </x-widget.table-widget>
 
             </div>
@@ -159,4 +166,4 @@
             </section>
         @endhasrole
     </div>
-</x-layouts.app>
+</div>

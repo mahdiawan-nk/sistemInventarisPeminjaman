@@ -24,7 +24,6 @@
     {{-- Chart --}}
     <div id="inventoryUnitsChart" style="height: 300px; width: 87%;"></div>
 
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var chartType = "{{ $type }}" === 'bar' ? 'column' : 'doughnut';
