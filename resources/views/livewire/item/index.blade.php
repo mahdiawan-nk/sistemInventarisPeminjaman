@@ -137,8 +137,11 @@
                                 <p class="text-gray-400 text-sm mb-6">
                                     Mulai tambah data baru untuk mengisi daftar ini.
                                 </p>
-                                <flux:button :href="route('items.create')" wire:navigate variant="primary">Tambah Data
-                                </flux:button>
+                                @hasanyrole('Administrator|Staff IT')
+                                    <flux:button :href="route('items.create')" wire:navigate variant="primary">Tambah Data
+                                    </flux:button>
+                                @endhasanyrole
+
                                 <!-- Button -->
                             </div>
                         </td>
